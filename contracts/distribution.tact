@@ -129,9 +129,13 @@ contract Distribution {
     }
 
     receive(msg: ClearNonces) {
+        require(self.owner == sender(), "Only owner");
+
         foreach (key, value in self.nonces) {
-            let _ = self.nonces.del(key);
-            self.noncesCount -= 1;
+            if (value <= now()) {
+                let _ = self.nonces.del(key);
+                self.noncesCount -= 1;
+            }
         }
     }
 
